@@ -72,7 +72,6 @@ async def product_create(product: ProductModel, Authorize: AuthJWT = Depends()):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="product with this title already exists",
             )
-
     else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -103,7 +102,7 @@ async def get_product_by_id(id: int, Authorize: AuthJWT = Depends()):
         )
 
 
-@product_router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@product_router.delete("/{id}/update", status_code=status.HTTP_204_NO_CONTENT)
 async def deleete_product_by_id(id: int, Authorize: AuthJWT = Depends()):
     try:
         Authorize.jwt_required()
@@ -181,5 +180,5 @@ async def update_product_by_id(
     else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="you haven't access for delete",
+            detail="you haven't access for update",
         )

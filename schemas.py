@@ -35,12 +35,12 @@ class LoginModel(BaseModel):
 
 
 class OrderModel(BaseModel):
-    id: Optional[int]
+    # id: Optional[int]
     quantity: int
     order_status: Optional[str] = "PENDING"
     user_id: Optional[int]
-    product_id: Optional[int]
-    
+    product_id: int
+
     class Config:
         from_attributes = True
         json_schema_extra = {
@@ -55,11 +55,8 @@ class OrderStatusModel(BaseModel):
 
     class Config:
         from_attributes = True
-        json_schema_extra = {
-            "example": {
-                "order_status": "PENDING"
-            }
-        }
+        json_schema_extra = {"example": {"order_status": "PENDING"}}
+
 
 class ProductModel(BaseModel):
     title: Optional[str]
@@ -68,8 +65,5 @@ class ProductModel(BaseModel):
     class Config:
         from_attributes = True
         json_schema_extra = {
-            "example": {
-                "title": "television",
-                "price": 150.00
-            }
+            "example": {"title": "television", "price": 150.00}
         }
