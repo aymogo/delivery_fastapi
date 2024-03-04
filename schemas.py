@@ -60,3 +60,16 @@ class OrderStatusModel(BaseModel):
                 "order_status": "PENDING"
             }
         }
+
+class ProductModel(BaseModel):
+    title: Optional[str]
+    price: Optional[float]
+
+    class Config:
+        from_attributes = True
+        json_schema_extra = {
+            "example": {
+                "title": "television",
+                "price": 150.00
+            }
+        }

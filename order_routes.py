@@ -22,7 +22,7 @@ async def get_order(Authorize: AuthJWT = Depends()):
     return {"message": "get order page"}
 
 
-@order_router.post("/make", status_code=status.HTTP_201_CREATED)
+@order_router.post("/create", status_code=status.HTTP_201_CREATED)
 async def maek_order(order: OrderModel, Authorize: AuthJWT = Depends()):
     try:
         Authorize.jwt_required()
@@ -56,7 +56,7 @@ async def maek_order(order: OrderModel, Authorize: AuthJWT = Depends()):
 
 
 @order_router.get("/list")
-async def list_order(Authorize: AuthJWT = Depends()):
+async def order_list(Authorize: AuthJWT=Depends()):
     try:
         Authorize.jwt_required()
     except Exception as e:
@@ -65,12 +65,36 @@ async def list_order(Authorize: AuthJWT = Depends()):
             detail="Enter a valid access token",
         )
 
-    current_user = Authorize.get_jwt_subject()
-    user = session.query(User).filter(User.username == current_user).first()
+    user = Authorize.get_jwt_subject()
+    current_user = session.query(User).filter(User.username == user).first()
 
-    if user.is_staff:
+    if current_user.is_staff:
         orders = session.query(Order).all()
         return jsonable_encoder(orders)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="you haven't access for this page",
+        )
+
+
+@order_router.get('/{id}')
+async def get_order_by_id(id: int, Authorize: AuthJWT=Depends()):
+    try:
+        Authorize.jwt_required()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Enter a valid access token",
+        )
+    
+    user = Authorize.get_jwt_subject()
+    current_user = session.query(User).filter(User.username == user).first()
+
+    if current_user.is_staff:
+        order = session.query(Order).filter(Order.id == id).first()
+        
+        return jsonable_encoder(order)
     else:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
